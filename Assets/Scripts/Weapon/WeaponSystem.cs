@@ -1,6 +1,21 @@
 using System;
 using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.Rendering;
+
+[System.Serializable]
+public struct MagnificationLevel
+{
+    public float multiplier;
+    public float targetFOV;
+
+    public MagnificationLevel(float multiplier, float targetFOV)
+    {
+        this.multiplier = multiplier;
+        this.targetFOV = targetFOV;
+    }
+}
 
 public class WeaponSystem : MonoBehaviour
 {
@@ -8,6 +23,7 @@ public class WeaponSystem : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerInputHandler playerInputHandler;
     [SerializeField] private GameObject bulletPrefab;
+    private Recoil _recoil;
 
     [Header("Ammo System")]
     [SerializeField] private AmmoData ammoData;
@@ -20,8 +36,34 @@ public class WeaponSystem : MonoBehaviour
     [SerializeField] private string reloadLayerName = "Reload Layer";
     private int reloadLayerIndex = -1;
     
-    [Header("Position")]
-    [SerializeField] private Transform firePoint;
+    
+    [Header("ADS")]
+    [SerializeField] private Transform defaultPos;
+    [SerializeField] private Transform adsPos;
+    
+    [SerializeField] private CinemachineCamera mainCamera;
+    [SerializeField] private Camera weaponCamera;
+
+    [SerializeField] private float defaultFOV;
+
+    [Header("Magnification Settings")]
+    [SerializeField] private MagnificationLevel[] magnificationLevels = new MagnificationLevel[]
+    {
+        new MagnificationLevel(1.0f, 60f),
+        new MagnificationLevel(1.5f, 42f),
+        new MagnificationLevel(2.0f, 33f),
+        new MagnificationLevel(3.0f, 23f),
+        new MagnificationLevel(4.0f, 18f),
+        new MagnificationLevel(6.0f, 12f)
+    };
+
+    [SerializeField] private int currentMagnificationIndex = 0;
+    [SerializeField] private float zoomTransitionSpeed = 8f;
+    private float targetFOV;
+
+    [SerializeField] private float adsAnimationSpeed = 1f;
+    private Transform weaponPos;
+
     
     [Header("Parameters")]
     [SerializeField] private float fireRate = 0.1f; // delay 대신 fireRate
@@ -30,6 +72,7 @@ public class WeaponSystem : MonoBehaviour
     [Header("VFX")]
     [SerializeField] private ParticleSystem muzzleFlash;
     [SerializeField] private GameObject impactEffect;
+    [SerializeField] private Transform firePoint;
     private float impactDuration = 3f;
     
     [Header("SFX")]
@@ -46,6 +89,14 @@ public class WeaponSystem : MonoBehaviour
     {
         animator = GetComponentInChildren<Animator>();
         playerInputHandler = GetComponentInParent<PlayerInputHandler>();
+        weaponPos = GetComponent<Transform>();
+        _recoil = FindAnyObjectByType<Recoil>();
+        
+        
+        defaultFOV = mainCamera.Lens.FieldOfView;
+
+        targetFOV = defaultFOV;
+        currentMagnificationIndex = 0;
 
         // muzzleFlash가 Inspector에서 할당되지 않은 경우에만 자동 할당
         if (muzzleFlash == null)
@@ -74,7 +125,7 @@ public class WeaponSystem : MonoBehaviour
         {
             TryReload();
         }
-
+        
         // 연사 가능 (홀드하면 계속 발사) - 달리는 중에는 사격 불가
         if (playerInputHandler.ShotTriggered && Time.time >= nextFireTime && !isReloading && !playerInputHandler.SprintTriggered)
         {
@@ -88,13 +139,15 @@ public class WeaponSystem : MonoBehaviour
                 PlayDryFireSound();
             }
         }
+        AimDownSight();
+        HandleMagnificationInput();
     }
 
     void Shoot()
     {
         // 탄약 소모
         ammoData.DecrementMagazineAmmo();
-
+        _recoil.RecoilFire();
         // 레이캐스트 발사
         if (Physics.Raycast(firePoint.position,firePoint.forward, out hitInfo, range))
         {
@@ -106,6 +159,7 @@ public class WeaponSystem : MonoBehaviour
             animator.SetTrigger("shooting");
 
         if (muzzleFlash != null)
+            muzzleFlash.GetComponent<Transform>().localPosition = firePoint.localPosition;
             muzzleFlash.Play();
 
         // 총성 사운드 재생 (별도 AudioSource 사용)
@@ -117,6 +171,66 @@ public class WeaponSystem : MonoBehaviour
         // 디버그 Ray 표시
         Debug.DrawRay(firePoint.position, firePoint.forward * range, Color.red, 0.5f);
     }
+    
+    void AimDownSight()
+    {
+        if (playerInputHandler.AdsTriggered && !playerInputHandler.SprintTriggered)
+        {
+            weaponPos.localPosition = Vector3.Lerp(weaponPos.localPosition, adsPos.localPosition, adsAnimationSpeed * Time.deltaTime);
+
+            if (magnificationLevels != null && magnificationLevels.Length > 0 &&
+                currentMagnificationIndex >= 0 && currentMagnificationIndex < magnificationLevels.Length)
+            {
+                targetFOV = magnificationLevels[currentMagnificationIndex].targetFOV;
+            }
+            else
+            {
+                targetFOV = defaultFOV * 0.6f;
+            }
+        }
+        else
+        {
+            weaponPos.localPosition = Vector3.Lerp(weaponPos.localPosition, defaultPos.localPosition, adsAnimationSpeed * Time.deltaTime);
+            targetFOV = defaultFOV;
+            currentMagnificationIndex = 0;
+        }
+
+        SetFov(Mathf.Lerp(mainCamera.Lens.FieldOfView, targetFOV, zoomTransitionSpeed * Time.deltaTime));
+    }
+
+    void HandleMagnificationInput()
+    {
+        if (!playerInputHandler.AdsTriggered)
+            return;
+
+        if (magnificationLevels == null || magnificationLevels.Length == 0)
+            return;
+
+        float scrollInput = playerInputHandler.ZoomScrollInput;
+
+        if (scrollInput > 0.1f)
+        {
+            currentMagnificationIndex++;
+            if (currentMagnificationIndex >= magnificationLevels.Length)
+                currentMagnificationIndex = 0;
+        }
+        else if (scrollInput < -0.1f)
+        {
+            currentMagnificationIndex--;
+            if (currentMagnificationIndex < 0)
+                currentMagnificationIndex = magnificationLevels.Length - 1;
+        }
+    }
+
+    void SetFov(float fov)
+    {
+        var lens = mainCamera.Lens;
+        lens.FieldOfView = fov;
+        mainCamera.Lens = lens;
+        
+        weaponCamera.fieldOfView = fov;
+    }
+
 
     void TryReload()
     {

@@ -85,6 +85,7 @@
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Movement\PlayerMovementSettings.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Player\PlayerState\PlayerJumpState.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Weapons\Attachments\DefaultAttachment.cs" />
+    <Compile Include="Assets\Scripts\Manager\GameManager.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Extra\Utilities\DestroyMe.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Extra\PowerUp.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Player\PlayerState\WeaponState\MeleeState.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Extra\DamageMultiplier.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
+    <Compile Include="Assets\Scripts\Recoil.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Player\PlayerState\PlayerDeadState.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Behaviours\Movement Behaviours\JumpBehaviour.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\PickUpSystem\Identifiable.cs" />
@@ -114,6 +116,7 @@
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Managers\GameSettingsManager.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Player\PlayerState\PlayerBaseState.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Player\PlayerState\WeaponState\WeaponReloadState.cs" />
+    <Compile Include="Assets\Scripts\Manager\PoolManager.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Extra\ShowAndHide.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Behaviours\Weapon Behaviours\AttachmentsSystem.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Weapons\IWeaponControllerProvider.cs" />
@@ -127,6 +130,7 @@
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Extra\Utilities\CowsinsEditorWindowUtilities.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Weapons\WeaponControllerEvents.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
+    <Compile Include="Assets\Scripts\Enemy\StateMachine\State\EnemyDeadState.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\PickUpSystem\WeaponPickeable.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Weapons\Attachments\Stock.cs" />
@@ -145,6 +149,7 @@
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Player\PlayerMultipliers.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Movement\IPlayerMovementProvider.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Weapons\ShootStyles\CustomShootStyle.cs" />
+    <Compile Include="Assets\Scripts\Enemy\StateMachine\State\EnemyAttackState.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\PickUpSystem\BulletsPickeable.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Effects\ProceduralShot.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Extra\CompassElement.cs" />
@@ -164,6 +169,7 @@
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Behaviours\Movement Behaviours\WallRunBehaviour.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Extra\Coin.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Managers\AddonManager.cs" />
+    <Compile Include="Assets\Scripts\Enemy\StateMachine\EnemyBaseState.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\PickUpSystem\BulletsItem_SO.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Weapons\Attachments\AttachmentEntryDrawer.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\PickUpSystem\AttachmentPickeable.cs" />
@@ -171,6 +177,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SimpleScript.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Effects\CameraEffects.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark04.cs" />
+    <Compile Include="Assets\Scripts\Spawner.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Enemies\TrainingTarget.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Behaviours\Weapon Behaviours\WeaponInventorySystem.cs" />
@@ -215,6 +222,7 @@
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Player\PlayerGraphics.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Movement\PlayerMovementEditor.cs" />
     <Compile Include="Assets\Scripts\Weapon\WeaponSystem.cs" />
+    <Compile Include="Assets\Scripts\Enemy\StateMachine\State\EnemyChaseState.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Effects\ProceduralShot_SO.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\PickUpSystem\Item_SO.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Weapons\Attachments\Attachment.cs" />
@@ -254,6 +262,7 @@
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Extra\Utilities\CowsinsUtilities.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Behaviours\Movement Behaviours\DashBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Enemy\StateMachine\EnemyStateManager.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Player\PlayerState\WeaponState\WeaponStateFactory.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\UI\CrosshairShapeEditor.cs" />
     <Compile Include="Assets\External_assets\Cowsins\Scripts\Extra\DoorInteractable.cs" />

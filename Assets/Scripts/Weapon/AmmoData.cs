@@ -12,7 +12,7 @@ public class AmmoData
     [SerializeField] private int currentReserveAmmo = 90;
 
     [Header("Reload Settings")]
-    [SerializeField] private float reloadDuration = 2.0f;
+    [SerializeField] private float reloadDuration = 3.0f;
 
     public int MagazineCapacity => magazineCapacity;
     public int CurrentMagazineAmmo => currentMagazineAmmo;
