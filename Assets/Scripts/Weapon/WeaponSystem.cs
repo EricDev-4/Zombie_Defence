@@ -64,14 +64,16 @@ public class WeaponSystem : MonoBehaviour
     [SerializeField] private float adsAnimationSpeed = 1f;
     private Transform weaponPos;
 
-    
+
     [Header("Parameters")]
+    [SerializeField] private float damage = 17.5f;
     [SerializeField] private float fireRate = 0.1f; // delay 대신 fireRate
     [SerializeField] private float range = 100f;
     
     [Header("VFX")]
     [SerializeField] private ParticleSystem muzzleFlash;
-    [SerializeField] private GameObject impactEffect;
+    [SerializeField] private GameObject EnemyImpact;
+    [SerializeField] private GameObject BulletImpact;
     [SerializeField] private Transform firePoint;
     private float impactDuration = 3f;
     
@@ -151,9 +153,29 @@ public class WeaponSystem : MonoBehaviour
         // 레이캐스트 발사
         if (Physics.Raycast(firePoint.position,firePoint.forward, out hitInfo, range))
         {
-            GameObject impact = Instantiate(impactEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal), hitInfo.transform);
-
-            Destroy(impact.gameObject , impactDuration);
+           if(hitInfo.collider.CompareTag("Enemy"))
+            {
+                EnemyHealth enemy = hitInfo.collider.GetComponent<EnemyHealth>();
+                if (enemy != null)
+                {
+                    // enemy hit
+                    enemy.Damaged(damage);
+                    GameObject enemyImpact = GameManager.instance.pool.Get(2);
+                    Transform t= enemyImpact.transform;
+                    t.position = hitInfo.point + hitInfo.normal * 0.001f;
+                    t.rotation = Quaternion.LookRotation(-hitInfo.normal, Vector3.up);
+                }
+            }
+           else
+            {
+                GameObject bulletHole = GameManager.instance.pool.Get(1);
+                Transform t = bulletHole.transform;
+                t.SetParent(hitInfo.transform);
+                t.position = hitInfo.point + hitInfo.normal * 0.001f;
+                t.rotation = Quaternion.LookRotation(-hitInfo.normal, Vector3.up);
+            }
+            //GameObject impact = Instantiate(impactEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal), hitInfo.transform);
+            //Destroy(impact.gameObject , impactDuration);
         }
         if (animator != null)
             animator.SetTrigger("shooting");
@@ -176,7 +198,9 @@ public class WeaponSystem : MonoBehaviour
     {
         if (playerInputHandler.AdsTriggered && !playerInputHandler.SprintTriggered)
         {
+            Debug.Log("ADS");
             weaponPos.localPosition = Vector3.Lerp(weaponPos.localPosition, adsPos.localPosition, adsAnimationSpeed * Time.deltaTime);
+            weaponPos.localRotation = Quaternion.Slerp(weaponPos.localRotation , adsPos.localRotation, adsAnimationSpeed * Time.deltaTime);
 
             if (magnificationLevels != null && magnificationLevels.Length > 0 &&
                 currentMagnificationIndex >= 0 && currentMagnificationIndex < magnificationLevels.Length)
@@ -191,6 +215,8 @@ public class WeaponSystem : MonoBehaviour
         else
         {
             weaponPos.localPosition = Vector3.Lerp(weaponPos.localPosition, defaultPos.localPosition, adsAnimationSpeed * Time.deltaTime);
+            weaponPos.localRotation = Quaternion.Slerp(weaponPos.localRotation , defaultPos.localRotation, adsAnimationSpeed * Time.deltaTime);
+
             targetFOV = defaultFOV;
             currentMagnificationIndex = 0;
         }

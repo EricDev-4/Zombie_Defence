@@ -1,6 +1,7 @@
 
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 
 public class Spawner : MonoBehaviour
@@ -33,7 +34,12 @@ public class Spawner : MonoBehaviour
     void Spawn()
     {
         GameObject enemy = GameManager.instance.pool.Get(0);
-        enemy.transform.position = spawnPoints[Random.Range(0, spawnPoints.Length)].position;
+        Vector3 spawnPos = spawnPoints[Random.Range(0, spawnPoints.Length)].position;
+        //enemy.transform.position = spawnPoints[Random.Range(0, spawnPoints.Length)].position;
         //ToDO : 적 많아지면 random 또는 확률로 다양한 적 생성
+
+        NavMeshAgent agent = enemy.GetComponent<NavMeshAgent>();
+        agent.Warp(spawnPos);
+
     }
 }

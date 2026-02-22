@@ -34,7 +34,7 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private Transform head;
     [SerializeField] Transform cinemachineCamera;
     [SerializeField] PlayerInputHandler playerInputHandler;
-    [SerializeField] private Animator currentWeaponAnimator;
+    private WeaponInventory weaponInventory;
 
     private Vector3 currentMovement;
     private float verticalRotation;
@@ -47,8 +47,8 @@ public class FirstPersonController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        currentWeaponAnimator = GetComponentInChildren<Animator>();
         audioSource = FindAnyObjectByType<AudioSource>();
+        weaponInventory = FindAnyObjectByType<WeaponInventory>();
     }
 
     private void Update()
@@ -91,10 +91,11 @@ public class FirstPersonController : MonoBehaviour
         bool isRunning = isMoving && playerInputHandler.SprintTriggered;
         bool isWalking = isMoving && !playerInputHandler.SprintTriggered;
 
-        if (currentWeaponAnimator != null)
+        Animator anim = weaponInventory != null ? weaponInventory.currentAnimator : null;
+        if (anim != null)
         {
-            currentWeaponAnimator.SetBool("walking", isWalking);
-            currentWeaponAnimator.SetBool("running", isRunning);
+            anim.SetBool("walking", isWalking);
+            anim.SetBool("running", isRunning);
         }
         
         if (characterController.isGrounded)

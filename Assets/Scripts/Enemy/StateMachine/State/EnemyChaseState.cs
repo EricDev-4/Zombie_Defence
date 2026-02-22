@@ -7,10 +7,10 @@ public class EnemyChaseState : EnemyBaseState
     {
     }
     
-    public override void Updata(EnemyStateManager sm)
+    public override void Update(EnemyStateManager sm)
     {
         sm.agent.SetDestination(sm.target.position);
-        sm.animator.SetFloat("MoveSpeed", sm.agent.velocity.magnitude);
+        sm.animator.SetFloat("MoveSpeed", sm.agent.velocity.magnitude / sm.agent.speed);
     }
     
     public override void Exit(EnemyStateManager sm)
